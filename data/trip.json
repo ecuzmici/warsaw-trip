@@ -1,0 +1,279 @@
+{
+  "title": "Warsaw",
+  "timezone": "Europe/Warsaw",
+  "base": {
+    "name": "Flat",
+    "address": "Krucza 19/43, Warszawa",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Krucza%2019%2C%20Warszawa"
+  },
+  "days": [
+    {
+      "date": "2026-08-13",
+      "label": "Thu 13 — uprising + riverside",
+      "items": [
+        {
+          "id": "t1",
+          "name": "Bułkę przez Bibułkę",
+          "address": "Żurawia 6/12, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Bu%C5%82k%C4%99%20przez%20Bibu%C5%82k%C4%99%20%C5%BBurawia%206%2F12%20Warszawa",
+          "start": "08:00",
+          "end": "08:45",
+          "travelMin": 3,
+          "travelMode": "walk",
+          "hours": { "open": "07:30", "close": "23:00" },
+          "note": "Two minutes from the flat. Opens 07:30."
+        },
+        {
+          "id": "t2",
+          "name": "Warsaw Uprising Museum",
+          "address": "Grzybowska 79, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Muzeum%20Powstania%20Warszawskiego%20Grzybowska%2079%20Warszawa",
+          "start": "09:15",
+          "end": "12:00",
+          "travelMin": 25,
+          "travelMode": "tram",
+          "hours": { "open": "08:00", "close": "20:00" },
+          "note": "Free entry on Thursday. No booking needed. Free day means queues, so go early."
+        },
+        {
+          "id": "t3",
+          "name": "Hala Mirowska",
+          "address": "Plac Mirowski 1, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Hala%20Mirowska%20Plac%20Mirowski%201%20Warszawa",
+          "start": "12:25",
+          "end": "13:45",
+          "travelMin": 20,
+          "travelMode": "walk",
+          "hours": { "open": "07:00", "close": "20:00" },
+          "note": "Lunch. Hala Gwardii next door has the food stalls."
+        },
+        {
+          "id": "t4",
+          "name": "Planetarium, Copernicus Science Centre",
+          "address": "Wybrzeże Kościuszkowskie 20, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Planetarium%20Niebo%20Kopernika%20Wybrze%C5%BCe%20Ko%C5%9Bciuszkowskie%2020%20Warszawa",
+          "start": "14:15",
+          "end": "15:15",
+          "travelMin": 25,
+          "travelMode": "tram",
+          "hours": { "open": "10:00", "close": "20:00" },
+          "note": "BOOK A SLOT at bilety.kopernik.org.pl. Separate ticket and entrance from the main exhibition. Show runs 45 min."
+        },
+        {
+          "id": "t5",
+          "name": "Powiśle and the Vistula boulevards",
+          "address": "Bulwary Wiślane, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Bulwary%20Wi%C5%9Blane%20Warszawa",
+          "start": "15:45",
+          "end": "18:30",
+          "travelMin": 10,
+          "travelMode": "walk",
+          "hours": { "open": "00:00", "close": "24:00" },
+          "note": "Container cafes and bars along the river. Loose block, no plan."
+        },
+        {
+          "id": "t6",
+          "name": "BUW rooftop garden",
+          "address": "Dobra 56/66, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Ogr%C3%B3d%20na%20dachu%20BUW%20Dobra%2056%20Warszawa",
+          "start": "18:45",
+          "end": "20:00",
+          "travelMin": 10,
+          "travelMode": "walk",
+          "hours": { "open": "08:00", "close": "20:00" },
+          "note": "Free. Gates shut at 20:00 sharp. Sunset is 20:45, so the light is good but you leave before the sun does."
+        },
+        {
+          "id": "t7",
+          "name": "Sunset on the boulevards",
+          "address": "Bulwary Wiślane, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Bulwary%20Wi%C5%9Blane%20Warszawa",
+          "start": "20:05",
+          "end": "21:15",
+          "travelMin": 5,
+          "travelMode": "walk",
+          "hours": { "open": "00:00", "close": "24:00" },
+          "note": "Sunset at 20:45."
+        },
+        {
+          "id": "t8",
+          "name": "Feliks Bar Café",
+          "address": "Nowogrodzka 15, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Feliks%20Bar%20Caf%C3%A9%20Nowogrodzka%2015%20Warszawa",
+          "start": "21:35",
+          "end": "23:00",
+          "travelMin": 20,
+          "travelMode": "walk",
+          "hours": { "open": "16:00", "close": "25:00" },
+          "note": "Dinner and drinks. Three minutes from the flat. Open till 01:00 on Thursday."
+        }
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "label": "Fri 14 — south",
+      "items": [
+        {
+          "id": "f1",
+          "name": "Mausoleum of Struggle and Martyrdom",
+          "address": "al. Jana Chrystiana Szucha 25, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Mauzoleum%20Walki%20i%20M%C4%99cze%C5%84stwa%20Szucha%2025%20Warszawa",
+          "start": "10:00",
+          "end": "10:45",
+          "travelMin": 16,
+          "travelMode": "walk",
+          "hours": { "open": "10:00", "close": "17:00" },
+          "note": "Open Wed to Sun only. Leave the flat by 09:40."
+        },
+        {
+          "id": "f2",
+          "name": "QQ Warsaw",
+          "address": "Żurawia 32, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=QQ%20Warsaw%20%C5%BBurawia%2032%20Warszawa",
+          "start": "11:10",
+          "end": "12:10",
+          "travelMin": 16,
+          "travelMode": "walk",
+          "hours": { "open": "11:00", "close": "20:00" },
+          "note": "Opens 11:00, which is why the museum comes first. Korean toasts and matcha. Expect a line."
+        },
+        {
+          "id": "f3",
+          "name": "Łazienki Park and Palace on the Isle",
+          "address": "Agrykola 1, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=%C5%81azienki%20Kr%C3%B3lewskie%20Pa%C5%82ac%20na%20Wyspie%20Warszawa",
+          "start": "13:00",
+          "end": "16:45",
+          "travelMin": 25,
+          "travelMode": "walk",
+          "hours": { "open": "10:00", "close": "18:00" },
+          "note": "Peacocks. Palace on the Isle closes 18:00 on Friday; the park itself runs till 22:00."
+        },
+        {
+          "id": "f4",
+          "name": "Thebooks.pl",
+          "address": "Puławska 134A, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Thebooks.pl%20Pu%C5%82awska%20134A%20Warszawa",
+          "start": "17:20",
+          "end": "18:20",
+          "travelMin": 25,
+          "travelMode": "bus + tram",
+          "hours": { "open": "11:00", "close": "19:30" },
+          "note": "Bus 116 or 180 out of the park, then tram down Puławska. English-language bookshop."
+        },
+        {
+          "id": "f5",
+          "name": "Stary Dom",
+          "address": "Puławska 104/106, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Restauracja%20Stary%20Dom%20Pu%C5%82awska%20104%20Warszawa",
+          "start": "18:40",
+          "end": "20:40",
+          "travelMin": 8,
+          "travelMode": "tram",
+          "hours": { "open": "12:00", "close": "23:30" },
+          "note": "BOOK A TABLE. Polish food, same street as the bookshop."
+        },
+        {
+          "id": "f6",
+          "name": "El Koktel",
+          "address": "Wojciecha Górskiego 9, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=El%20Koktel%20Wojciecha%20G%C3%B3rskiego%209%20Warszawa",
+          "start": "21:10",
+          "end": "23:30",
+          "travelMin": 20,
+          "travelMode": "tram",
+          "hours": { "open": "18:00", "close": "26:00" },
+          "note": "Ring the doorbell to get in. This is in the centre, not Mokotów."
+        }
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "label": "Sat 15 — parade + Praga",
+      "items": [
+        {
+          "id": "s1",
+          "name": "Manekin",
+          "address": "Plac Konstytucji 5, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Manekin%20Plac%20Konstytucji%20Warszawa",
+          "start": "09:00",
+          "end": "10:10",
+          "travelMin": 5,
+          "travelMode": "walk",
+          "hours": { "open": "09:00", "close": "22:00" },
+          "note": "Breakfast menu runs 09:00 to 12:00. Public holiday, but restaurants stay open."
+        },
+        {
+          "id": "s2",
+          "name": "Parade spot, Wisłostrada by the Citadel",
+          "address": "Wisłostrada przy Cytadeli, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Wis%C5%82ostrada%20Cytadela%20Warszawska",
+          "start": "10:45",
+          "end": "13:30",
+          "travelMin": 30,
+          "travelMode": "metro M1 to Dworzec Gdański",
+          "hours": { "open": "00:00", "close": "24:00" },
+          "note": "Parade starts 12:00. Take the metro, do NOT walk east from the flat: Wisłostrada is closed and you cannot cross it at Ludna or Łazienkowska. Standing here puts the picnic 15 min away."
+        },
+        {
+          "id": "s3",
+          "name": "Military zone, Warsaw Citadel",
+          "address": "ul. Gwardii 4, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Cytadela%20Warszawska%20Gwardii%204%20Warszawa",
+          "start": "13:50",
+          "end": "15:30",
+          "travelMin": 15,
+          "travelMode": "walk",
+          "hours": { "open": "10:00", "close": "18:00" },
+          "note": "Equipment displays, simulators, concerts, grochówka."
+        },
+        {
+          "id": "s4",
+          "name": "Nostalgia Praga",
+          "address": "11 Listopada 24, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Nostalgia%20Praga%2011%20Listopada%2024%20Warszawa",
+          "start": "16:00",
+          "end": "17:00",
+          "travelMin": 25,
+          "travelMode": "tram over Most Gdański",
+          "hours": { "open": "12:00", "close": "18:00" },
+          "note": "RISK: public holiday with a trading ban. Check @nostalgia_praga on Instagram the night before; they post the month's hours."
+        },
+        {
+          "id": "s5",
+          "name": "Praga riverbank, Plaża Rusałka",
+          "address": "Plaża Rusałka, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Pla%C5%BCa%20Rusa%C5%82ka%20Warszawa",
+          "start": "17:20",
+          "end": "18:50",
+          "travelMin": 20,
+          "travelMode": "walk",
+          "hours": { "open": "00:00", "close": "24:00" },
+          "note": "Wild bank. Old Town skyline on the far side."
+        },
+        {
+          "id": "s6",
+          "name": "Pyzy Flaki Gorące",
+          "address": "Brzeska 29/31, Warszawa",
+          "maps": "https://www.google.com/maps/search/?api=1&query=Pyzy%20Flaki%20Gor%C4%85ce%20Brzeska%2029%20Warszawa",
+          "start": "19:10",
+          "end": "20:40",
+          "travelMin": 20,
+          "travelMode": "walk",
+          "hours": { "open": "12:00", "close": "22:00" },
+          "note": "Brzeska 29/31, not 32. Milk-bar style, pyzy in jars."
+        }
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "name": "Refitted",
+      "why": "Vintage shop you asked for. No fixed address found; it reads as a pop-up. Send a link and I will slot it into Friday."
+    },
+    {
+      "name": "MindUp",
+      "why": "No venue by this name exists at Rondo Daszyńskiego. The rooftop there is The Roof Skybar, Crowne Plaza The HUB, 21st floor, Thu to Sat 18:00 to 01:00."
+    }
+  ]
+}

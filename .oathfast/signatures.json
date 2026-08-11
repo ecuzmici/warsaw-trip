@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "signatures": {
+    "G1": {
+      "hash": "sha256:12939c6f5f4f322d02454f6a71418490774da2d154688abae593c4b9e8e53977",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G2": {
+      "hash": "sha256:238b679740fa443d7c0a7b38964e9fdb0308fe1e173452024c5efbe23507396b",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G3": {
+      "hash": "sha256:f4e564e2e1126126c96f645254e1c32ae13e93e38300a55475f1483a250916d7",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G4": {
+      "hash": "sha256:26d38a276481294e8a64969a698c9b773f9a5efd97881a8909a94b99c8f39b78",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G5": {
+      "hash": "sha256:828f10641ea570dd6b0c2047688dfd9520227d816dec6aa641d7998c17823ec7",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G6": {
+      "hash": "sha256:7f8b4326c4ed11889bdaa8698dc15a551fa0b43ae9778ef988c8e9c1553c4e0b",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G7": {
+      "hash": "sha256:aaebe4a7f744bb3df639806e7517bc4d138283e8961264df496fc5b9dac7d6c2",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G8": {
+      "hash": "sha256:300d9b70f1027641d1cda58b29f1f55326dca97ae1ed3d9197ca78fb83964e45",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "G9": {
+      "hash": "sha256:cdaeb6e069f90005e0b349a444d6d95e8126a002239fbfaa5ba9edc8690afc0a",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "T1": {
+      "hash": "sha256:db6c3bf93455bcc0eeb1ee9492fe5d49d24fc51aad6dd7eeb39d177396fbf8c9",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "T2": {
+      "hash": "sha256:f0f4caf34b132ab7efbb3a81d77b88f8489d10a492dd16452a143c5e0d7c901b",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "T3": {
+      "hash": "sha256:791e983f4b1c0bb6832065a577dad580dec1d6275f261303bde0ead807b03f88",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "T4": {
+      "hash": "sha256:84d66726493f24e0f2a2f360528bb389b4b2845b0a990c17d06d4b106e01414b",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "T5": {
+      "hash": "sha256:861f230a66ce4d096171ff3d759932126b6f3f30375fd6246dbaa3d2e56198b2",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "T6": {
+      "hash": "sha256:a11daa09d1b25a63628193e6cecb705164833f4471ae5e1082c3a7cfad88cc88",
+      "by": "emil",
+      "date": "2026-08-11"
+    },
+    "T7": {
+      "hash": "sha256:d08b7db7ffae566e04c8c11da23288e2be7ff7cdd43978e8bccf9d1b62872392",
+      "by": "emil",
+      "date": "2026-08-11"
+    }
+  }
+}

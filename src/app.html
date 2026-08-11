@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#11131a">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bg: #f6f6f4; --panel: #ffffff; --ink: #16181d; --dim: #626976;
+    --line: #e2e2dd; --accent: #b4472e; --ok: #2f6f4f; --warn: #8a5a00;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11131a; --panel: #191c25; --ink: #eef0f4; --dim: #98a0b0;
+      --line: #262a36; --accent: #ff8a6a; --ok: #7fd6a6; --warn: #f0c070;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11131a; --panel: #191c25; --ink: #eef0f4; --dim: #98a0b0;
+    --line: #262a36; --accent: #ff8a6a; --ok: #7fd6a6; --warn: #f0c070;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 16px 14px 56px; }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  h1 { font-size: 1.05rem; margin: 0; letter-spacing: .02em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
+  .clock { font-variant-numeric: tabular-nums; font-size: 1.5rem; font-weight: 700; }
+  .clock small { display: block; text-align: right; font-size: .68rem; font-weight: 500; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .card.now { border-color: var(--accent); border-width: 2px; }
+  .kicker { font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); font-weight: 700; margin-bottom: 6px; }
+  .kicker.hot { color: var(--accent); }
+  .name { font-size: 1.35rem; font-weight: 700; line-height: 1.25; margin: 0 0 4px; }
+  .when { font-variant-numeric: tabular-nums; color: var(--dim); font-size: .95rem; }
+  .note { margin: 10px 0 0; font-size: .92rem; color: var(--ink); }
+  .note.risk { color: var(--warn); font-weight: 600; }
+  .leave { margin-top: 10px; font-size: .95rem; font-weight: 600; color: var(--ok); font-variant-numeric: tabular-nums; }
+  .leave.urgent { color: var(--accent); }
+  a.maps {
+    display: inline-block; margin-top: 12px; padding: 11px 16px;
+    background: var(--accent); color: #fff; text-decoration: none;
+    border-radius: 10px; font-weight: 600; font-size: .95rem;
+  }
+  a.maps:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  h2 { font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); margin: 26px 0 10px; }
+  ol { list-style: none; margin: 0; padding: 0; }
+  li { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  li:last-child { border-bottom: 0; }
+  li .t { font-variant-numeric: tabular-nums; color: var(--dim); font-size: .9rem; min-width: 4.2em; padding-top: 1px; }
+  li .b { flex: 1; min-width: 0; }
+  li .b a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+  li.past { opacity: .42; }
+  li.active .b a { color: var(--accent); font-weight: 700; border-bottom-color: var(--accent); }
+  details { margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 600; padding: 10px 0; color: var(--dim); }
+  .cand { font-size: .9rem; color: var(--dim); }
+  .cand b { color: var(--ink); }
+  footer { margin-top: 30px; font-size: .78rem; color: var(--dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="trip-title"></h1>
+    <div class="clock"><span id="clock">--</span><small id="today"></small></div>
+  </header>
+  <div id="live" aria-live="polite"></div>
+  <div id="rest"></div>
+  <footer id="foot"></footer>
+</div>
+<script type="module">
+__SCHEDULE__
+
+const TRIP = __TRIP__;
+
+const pad = (n) => String(n).padStart(2, "0");
+const hhmm = (mins) => pad(Math.floor(mins / 60) % 24) + ":" + pad(mins % 60);
+const el = (html) => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function mapsBtn(item, label) {
+  return `<a class="maps" href="${esc(item.maps)}" target="_blank" rel="noopener">${esc(label)}</a>`;
+}
+
+function card(kicker, item, opts = {}) {
+  const risk = /^RISK:|^BOOK /.test(item.note || "");
+  return `
+    <div class="card${opts.now ? " now" : ""}">
+      <div class="kicker${opts.now ? " hot" : ""}">${esc(kicker)}</div>
+      <p class="name">${esc(item.name)}</p>
+      <div class="when">${esc(item.start)}&ndash;${esc(item.end)} &middot; ${esc(item.address)}</div>
+      ${opts.leave || ""}
+      ${item.note ? `<p class="note${risk ? " risk" : ""}">${esc(item.note)}</p>` : ""}
+      ${mapsBtn(item, "Open in Maps")}
+    </div>`;
+}
+
+function dayList(day, nowMin, isToday) {
+  const rows = day.items.map((it) => {
+    const active = isToday && toMinutes(it.start) <= nowMin && nowMin < toMinutes(it.end);
+    const past = isToday && nowMin >= toMinutes(it.end);
+    return `<li class="${active ? "active" : past ? "past" : ""}">
+        <span class="t">${esc(it.start)}</span>
+        <span class="b"><a href="${esc(it.maps)}" target="_blank" rel="noopener">${esc(it.name)}</a></span>
+      </li>`;
+  }).join("");
+  return `<ol>${rows}</ol>`;
+}
+
+function render() {
+  const now = Date.now();
+  const wall = wallClock(now, TRIP.timezone);
+  const r = resolve(TRIP, now);
+
+  document.getElementById("trip-title").textContent = TRIP.title;
+  document.getElementById("clock").textContent = hhmm(wall.minutes);
+  document.getElementById("today").textContent = TRIP.timezone.split("/")[1].replace("_", " ");
+
+  const live = [];
+  if (r.state === "during") {
+    live.push(card("You should be here now", r.current, { now: true }));
+  } else if (r.state === "gap" || r.state === "before") {
+    live.push(`<div class="card"><div class="kicker">Nothing scheduled right now</div>
+      <p class="name">Free</p><div class="when">Next up below.</div></div>`);
+  } else if (r.state === "done") {
+    live.push(`<div class="card"><div class="kicker">Day done</div>
+      <p class="name">That is the lot</p><div class="when">Go to bed.</div></div>`);
+  } else {
+    live.push(`<div class="card"><div class="kicker">Trip over</div>
+      <p class="name">Nothing left</p><div class="when">Hope it was good.</div></div>`);
+  }
+
+  if (r.next) {
+    const leaveAt = toMinutes(r.next.start) - (r.next.travelMin || 0);
+    let leave = "";
+    if (r.day) {
+      const mins = leaveAt - wall.minutes;
+      const urgent = mins <= 15;
+      const text = mins <= 0
+        ? `Leave now &middot; ${esc(r.next.travelMode || "")} ${r.next.travelMin || 0} min`
+        : `Leave by ${hhmm(leaveAt)} &middot; ${esc(r.next.travelMode || "")} ${r.next.travelMin || 0} min &middot; in ${mins} min`;
+      leave = `<div class="leave${urgent ? " urgent" : ""}">${text}</div>`;
+    }
+    live.push(card("Next", r.next, { leave }));
+  }
+  document.getElementById("live").innerHTML = live.join("");
+
+  const days = [...TRIP.days].sort((a, b) => a.date.localeCompare(b.date));
+  const rest = days.map((d) => {
+    const isToday = d.date === wall.date;
+    const body = `<h2>${esc(d.label)}</h2>${dayList(d, wall.minutes, isToday)}`;
+    return isToday ? body : `<details><summary>${esc(d.label)}</summary>${dayList(d, 0, false)}</details>`;
+  }).join("");
+
+  const cands = (TRIP.candidates || []).map(
+    (c) => `<p class="cand"><b>${esc(c.name)}</b> &mdash; ${esc(c.why)}</p>`
+  ).join("");
+  document.getElementById("rest").innerHTML = rest + (cands ? `<h2>Unresolved</h2>${cands}` : "");
+
+  document.getElementById("foot").innerHTML =
+    `Base: <a href="${esc(TRIP.base.maps)}" target="_blank" rel="noopener">${esc(TRIP.base.address)}</a>. ` +
+    `Clock is ${esc(TRIP.timezone)}, whatever your phone says.`;
+}
+
+render();
+setInterval(render, 15000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+</script>
+</body>
+</html>

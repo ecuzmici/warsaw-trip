@@ -1,0 +1,10 @@
+{
+  "name": "warsaw-trip",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "build": "node build.mjs",
+    "check": "node --test && node build.mjs && node check.mjs"
+  }
+}
