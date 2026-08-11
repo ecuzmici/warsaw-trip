@@ -9,17 +9,20 @@
   :root {
     --bg: #f6f6f4; --panel: #ffffff; --ink: #16181d; --dim: #626976;
     --line: #e2e2dd; --accent: #b4472e; --ok: #2f6f4f; --warn: #8a5a00;
+    --on-accent: #ffffff;
     --radius: 14px;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #11131a; --panel: #191c25; --ink: #eef0f4; --dim: #98a0b0;
       --line: #262a36; --accent: #ff8a6a; --ok: #7fd6a6; --warn: #f0c070;
+      --on-accent: #11131a;
     }
   }
   :root[data-theme="dark"] {
     --bg: #11131a; --panel: #191c25; --ink: #eef0f4; --dim: #98a0b0;
     --line: #262a36; --accent: #ff8a6a; --ok: #7fd6a6; --warn: #f0c070;
+    --on-accent: #11131a;
   }
   * { box-sizing: border-box; }
   body {
@@ -45,24 +48,29 @@
   .leave.urgent { color: var(--accent); }
   a.maps {
     display: inline-block; margin-top: 12px; padding: 11px 16px;
-    background: var(--accent); color: #fff; text-decoration: none;
+    background: var(--accent); color: var(--on-accent); text-decoration: none;
     border-radius: 10px; font-weight: 600; font-size: .95rem;
   }
   a.maps:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
   h2 { font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); margin: 26px 0 10px; }
   ol { list-style: none; margin: 0; padding: 0; }
-  li { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  li { border-bottom: 1px solid var(--line); }
   li:last-child { border-bottom: 0; }
-  li .t { font-variant-numeric: tabular-nums; color: var(--dim); font-size: .9rem; min-width: 4.2em; padding-top: 1px; }
+  li a.row {
+    display: flex; gap: 12px; align-items: baseline; min-height: 48px;
+    padding: 13px 2px; color: inherit; text-decoration: none;
+  }
+  li a.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 8px; }
+  li .t { font-variant-numeric: tabular-nums; color: var(--dim); font-size: .9rem; min-width: 4.2em; flex: none; }
   li .b { flex: 1; min-width: 0; }
-  li .b a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
   li.past { opacity: .42; }
-  li.active .b a { color: var(--accent); font-weight: 700; border-bottom-color: var(--accent); }
+  li.active .b { color: var(--accent); font-weight: 700; }
   details { margin-bottom: 10px; }
-  summary { cursor: pointer; font-weight: 600; padding: 10px 0; color: var(--dim); }
+  summary { cursor: pointer; font-weight: 600; padding: 15px 2px; min-height: 48px; color: var(--dim); }
   .cand { font-size: .9rem; color: var(--dim); }
   .cand b { color: var(--ink); }
   footer { margin-top: 30px; font-size: .78rem; color: var(--dim); }
+  footer a { color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
 </style>
 </head>
 <body>
@@ -107,8 +115,10 @@ function dayList(day, nowMin, isToday) {
     const active = isToday && toMinutes(it.start) <= nowMin && nowMin < toMinutes(it.end);
     const past = isToday && nowMin >= toMinutes(it.end);
     return `<li class="${active ? "active" : past ? "past" : ""}">
-        <span class="t">${esc(it.start)}</span>
-        <span class="b"><a href="${esc(it.maps)}" target="_blank" rel="noopener">${esc(it.name)}</a></span>
+        <a class="row" href="${esc(it.maps)}" target="_blank" rel="noopener">
+          <span class="t">${esc(it.start)}</span>
+          <span class="b">${esc(it.name)}</span>
+        </a>
       </li>`;
   }).join("");
   return `<ol>${rows}</ol>`;

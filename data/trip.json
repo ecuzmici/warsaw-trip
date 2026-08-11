@@ -9,7 +9,7 @@
   "days": [
     {
       "date": "2026-08-13",
-      "label": "Thu 13 — uprising + riverside",
+      "label": "Thu 13 · uprising + riverside",
       "items": [
         {
           "id": "t1",
@@ -111,7 +111,7 @@
     },
     {
       "date": "2026-08-14",
-      "label": "Fri 14 — south",
+      "label": "Fri 14 · south",
       "items": [
         {
           "id": "f1",
@@ -189,7 +189,7 @@
     },
     {
       "date": "2026-08-15",
-      "label": "Sat 15 — parade + Praga",
+      "label": "Sat 15 · parade + Praga",
       "items": [
         {
           "id": "s1",
