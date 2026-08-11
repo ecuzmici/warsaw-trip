@@ -1,3 +1,8 @@
+import { pathToFileURL } from "node:url";
+import { resolve as rp } from "node:path";
+
+const PAGE = pathToFileURL(rp(process.cwd(), "docs/index.html")).href;
+
 let chromium;
 try {
   ({ chromium } = await import("playwright"));
@@ -9,7 +14,7 @@ try {
 // Browser checks the node gate cannot make: rendered contrast, real tap-target
 // boxes, runtime errors, and the disclosure state surviving a clock tick.
 // Run with: npm run check:browser  (needs npx playwright install chromium)
-const URL = "file:///home/emil/code/warsaw-trip/docs/index.html";
+const URL = PAGE;
 
 const AUDIT = () => {
   const lum = (c) => { const s = c.map(v => { v /= 255; return v <= .03928 ? v/12.92 : ((v+.055)/1.055)**2.4; }); return .2126*s[0]+.7152*s[1]+.0722*s[2]; };
@@ -84,6 +89,57 @@ console.log(bad ? `  ${bad} failing combinations` : "  all 24 combinations clean
 if (bad) process.exitCode = 1;
 
 
+console.log("\nG15, the leave instruction outranks everything when it is due:");
+{
+const b = await chromium.launch();
+let bad15 = 0;
+// Two late instants: just past the deadline, and well past it.
+for (const [name, ms] of [["due", Date.UTC(2026,7,13,11,50)], ["overdue", Date.UTC(2026,7,13,12,5)]]) {
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });
+  await ctx.addInitScript(`Date.now = () => ${ms};`);
+  const p = await ctx.newPage();
+  await p.goto(PAGE, { waitUntil: "load" });
+  const r = await p.evaluate(() => {
+    const head = document.querySelector("#live .headline");
+    if (!head) return { ok: false, why: "no headline" };
+    const size = (e) => parseFloat(getComputedStyle(e).fontSize);
+    const mine = size(head);
+    const bigger = [...document.querySelectorAll("body *")]
+      .filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
+      .filter((e) => e !== head && size(e) > mine)
+      .map((e) => e.textContent.trim().slice(0, 20) + " @" + size(e));
+    return { ok: bigger.length === 0 && /^Leave/.test(head.textContent), head: head.textContent, mine, bigger };
+  });
+  if (!r.ok) { bad15++; console.log(`  !! ${name}: ${JSON.stringify(r)}`); }
+  else console.log(`  ${name.padEnd(8)} "${r.head}" at ${r.mine}px, nothing larger`);
+  await ctx.close();
+}
+await b.close();
+if (bad15) process.exitCode = 1;
+}
+
+console.log("\nG14, every note and every opening time is reachable in the page:");
+{
+const b = await chromium.launch();
+const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });
+await ctx.addInitScript(`Date.now = () => ${Date.UTC(2026,7,13,8,30)};`);
+const p = await ctx.newPage();
+await p.goto(PAGE, { waitUntil: "load" });
+const trip = JSON.parse(await (await import("node:fs/promises")).readFile("data/trip.json", "utf8"));
+// Open every disclosure, then read the page as plain text.
+await p.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
+const text = await p.evaluate(() => document.body.innerText.replace(/\s+/g, " "));
+const missing = [];
+for (const day of trip.days) for (const it of day.items) {
+  const note = (it.note || "").replace(/^RISK:\s*/, "").replace(/\s+/g, " ").trim();
+  if (note && !text.includes(note)) missing.push(it.id + " note");
+  if (it.hours && !new RegExp("(Open till|Tight|Shut)").test(text)) missing.push(it.id + " hours");
+}
+console.log(missing.length ? "  !! unreachable: " + missing.join(", ") : `  all ${trip.days.flatMap(d=>d.items).length} items expose note and hours`);
+if (missing.length) process.exitCode = 1;
+await b.close();
+}
+
 console.log("\ndisclosures, focus and scroll across a changing schedule:");
 {
 const b = await chromium.launch();
@@ -98,7 +154,7 @@ await ctx.addInitScript(`
 `);
 const p = await ctx.newPage();
 const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
-await p.goto("file:///home/emil/code/warsaw-trip/docs/index.html", { waitUntil: "load" });
+await p.goto(PAGE, { waitUntil: "load" });
 
 // Open a collapsed day, open a row inside it, open a row in today, focus a link, scroll.
 await p.click(".fold summary");                       // Fri 14

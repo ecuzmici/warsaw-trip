@@ -22,9 +22,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      # Runs the tests, builds the page, then gates on every guarantee.
-      # A failure here stops the deploy job, so the site keeps the last good data.
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Data and time logic: G1 to G9.
       - run: npm run check
+      # Rendered page in a real browser: G10 to G15.
+      # A failure here stops the deploy job, so the site keeps the last good page.
+      - run: npm run check:browser
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs
