@@ -22,7 +22,7 @@ T2  15 August 2026 is a Polish public holiday with a trading ban. Shops can clos
 T3  Google Maps URLs keep pointing at the same place.
 T4  GitHub Pages stays available during the trip.
 T5  The phone flow needs Claude Code on the phone and GitHub push access.
-T6  "Refitted" and "MindUp" are unverified. No source confirms either venue.
+T6  "MindUp" is unverified. Refitted's address and hours rest on the shop's own Instagram.
 T7  The recorded travel times are achievable on the day.
 T8  Chromium's computed styles stand in for every browser. Other engines can lay the page out differently.
 
