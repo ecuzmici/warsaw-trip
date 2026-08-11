@@ -3,90 +3,184 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#11131a">
+<meta name="description" content="__TITLE__ — where to be, and when to leave.">
+<meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12141b" media="(prefers-color-scheme: dark)">
 <title>__TITLE__</title>
 <style>
+  /* Light is the primary scene: this is read outdoors, in August sun. */
   :root {
-    --bg: #f6f6f4; --panel: #ffffff; --ink: #16181d; --dim: #626976;
-    --line: #e2e2dd; --accent: #b4472e; --ok: #2f6f4f; --warn: #8a5a00;
+    --bg: #faf7f2;
+    --panel: #ffffff;
+    --ink: #14161b;
+    --dim: #5b6270;
+    --mute: #656c7a;          /* spent rows: measured at 4.94:1, never an opacity fade */
+    --line: #d5d2c9;
+    --edge: #b9b5a9;
+    --ok: #1f6b45;
+    --warn: #8a5000;
     --on-accent: #ffffff;
+    --day-1: #a8452b;
+    --day-2: #7a3a6e;
+    --day-3: #1c5f6b;
+    --accent: var(--day-1);
+    --sel: #f2ddd4;
     --radius: 14px;
+    --gut: 18px;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #11131a; --panel: #191c25; --ink: #eef0f4; --dim: #98a0b0;
-      --line: #262a36; --accent: #ff8a6a; --ok: #7fd6a6; --warn: #f0c070;
-      --on-accent: #11131a;
+      --bg: #12141b; --panel: #1a1d26; --ink: #eef0f4; --dim: #a2aab8;
+      --mute: #8b93a2; --line: #2b3040; --edge: #3d4354;
+      --ok: #74d3a2; --warn: #f0bc63; --on-accent: #12141b;
+      --day-1: #ff9070; --day-2: #e79ad6; --day-3: #6fd0e0;
+      --sel: #43301f;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #11131a; --panel: #191c25; --ink: #eef0f4; --dim: #98a0b0;
-    --line: #262a36; --accent: #ff8a6a; --ok: #7fd6a6; --warn: #f0c070;
-    --on-accent: #11131a;
+    --bg: #12141b; --panel: #1a1d26; --ink: #eef0f4; --dim: #a2aab8;
+    --mute: #8b93a2; --line: #2b3040; --edge: #3d4354;
+    --ok: #74d3a2; --warn: #f0bc63; --on-accent: #12141b;
+    --day-1: #ff9070; --day-2: #e79ad6; --day-3: #6fd0e0;
+    --sel: #43301f;
   }
+
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
+  html { scrollbar-color: var(--edge) transparent; }
+  ::selection { background: var(--sel); color: var(--ink); }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--edge); border-radius: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-variant-numeric: tabular-nums;
+    caret-color: var(--accent);
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 34rem; margin: 0 auto; padding: 18px var(--gut) 64px; }
   .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
-    -webkit-text-size-adjust: 100%;
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  /* ---- header ---- */
+  header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 22px;
   }
-  .wrap { max-width: 640px; margin: 0 auto; padding: 16px 14px 56px; }
-  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-  h1 { font-size: 1.05rem; margin: 0; letter-spacing: .02em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
-  .clock { font-variant-numeric: tabular-nums; font-size: 1.5rem; font-weight: 700; }
-  .clock small { display: block; text-align: right; font-size: .68rem; font-weight: 500; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
-  .card.now { border-color: var(--accent); border-width: 2px; }
-  .kicker { font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); font-weight: 700; margin-bottom: 6px; }
-  .kicker.hot { color: var(--accent); }
-  .name { font-size: 1.35rem; font-weight: 700; line-height: 1.25; margin: 0 0 4px; }
-  .when { font-variant-numeric: tabular-nums; color: var(--dim); font-size: .95rem; }
-  .note { margin: 10px 0 0; font-size: .92rem; color: var(--ink); }
-  .note.risk { color: var(--warn); font-weight: 600; }
-  .leave { margin-top: 10px; font-size: .95rem; font-weight: 600; color: var(--ok); font-variant-numeric: tabular-nums; }
-  .leave.urgent { color: var(--accent); }
-  a.maps {
-    display: inline-block; margin-top: 12px; padding: 11px 16px;
-    background: var(--accent); color: var(--on-accent); text-decoration: none;
-    border-radius: 10px; font-weight: 600; font-size: .95rem;
+  .day-name { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .trip-name { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
+  .clock { font-size: 2.1rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+
+  /* ---- the two live cards ---- */
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
   }
-  a.maps:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-  h2 { font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); margin: 26px 0 10px; }
+  .card.here { border: 2px solid var(--accent); padding: 17px; }
+  .card.act { border: 2px solid var(--warn); padding: 17px; }
+  .headline {
+    font-size: 1.62rem; font-weight: 700; line-height: 1.15;
+    letter-spacing: -0.025em; margin: 0 0 6px; text-wrap: balance;
+  }
+  .card.act .headline { color: var(--warn); }
+  .sub { font-size: 1.05rem; font-weight: 600; line-height: 1.3; margin: 0 0 6px; }
+  .meta { font-size: .92rem; color: var(--dim); line-height: 1.45; }
+  .open-state { font-size: .92rem; font-weight: 600; color: var(--ok); margin-top: 6px; }
+  .open-state.shut { color: var(--warn); }
+  .note { margin: 12px 0 0; font-size: .95rem; line-height: 1.5; }
+  .note.flag { color: var(--warn); font-weight: 600; }
+  .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .btn {
+    display: inline-flex; align-items: center; min-height: 46px;
+    padding: 0 18px; border-radius: 10px; font: inherit; font-weight: 650;
+    font-size: .95rem; text-decoration: none; cursor: pointer;
+  }
+  .btn.primary { background: var(--accent); color: var(--on-accent); border: 2px solid var(--accent); }
+  .btn.second { background: transparent; color: var(--ink); border: 2px solid var(--edge); }
+
+  /* ---- day sections ---- */
+  .day { margin-top: 34px; }
+  .day > h2 {
+    font-size: .76rem; text-transform: uppercase; letter-spacing: .12em;
+    color: var(--accent); font-weight: 700; margin: 0 0 4px;
+  }
+  .day-1 { --accent: var(--day-1); }
+  .day-2 { --accent: var(--day-2); }
+  .day-3 { --accent: var(--day-3); }
   ol { list-style: none; margin: 0; padding: 0; }
   li { border-bottom: 1px solid var(--line); }
   li:last-child { border-bottom: 0; }
-  li a.row {
-    display: flex; gap: 12px; align-items: baseline; min-height: 48px;
-    padding: 13px 2px; color: inherit; text-decoration: none;
+  .row {
+    display: flex; gap: 14px; align-items: baseline; width: 100%;
+    min-height: 52px; padding: 14px 2px; background: none; border: 0;
+    font: inherit; color: inherit; text-align: left; cursor: pointer;
   }
-  li a.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 8px; }
-  li .t { font-variant-numeric: tabular-nums; color: var(--dim); font-size: .9rem; min-width: 4.2em; flex: none; }
-  li .b { flex: 1; min-width: 0; }
-  li.past { opacity: .42; }
-  li.active .b { color: var(--accent); font-weight: 700; }
-  details { margin-bottom: 10px; }
-  summary { cursor: pointer; font-weight: 600; padding: 15px 2px; min-height: 48px; color: var(--dim); }
-  .cand { font-size: .9rem; color: var(--dim); }
+  .row::-webkit-details-marker { display: none; }
+  .row .t { color: var(--dim); font-size: .92rem; min-width: 4.3em; flex: none; }
+  .row .n { flex: 1; min-width: 0; }
+  li.spent .row .t, li.spent .row .n { color: var(--mute); }
+  li.here .row .n { color: var(--accent); font-weight: 700; }
+  li.here .row .t { color: var(--accent); }
+  .chev { flex: none; align-self: center; color: var(--edge); transition: none; }
+  .chev svg { display: block; width: 14px; height: 14px; }
+  details[open] > .row .chev { color: var(--accent); transform: rotate(180deg); }
+  .body { padding: 0 2px 16px 2px; }
+  .body .meta { margin-bottom: 4px; }
+  .body .note { margin-top: 8px; }
+
+  /* ---- collapsed day ---- */
+  .day.folded { margin-top: 10px; }
+  .fold > summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    min-height: 56px; cursor: pointer; font-weight: 650; color: var(--accent);
+    font-size: .95rem; padding: 14px 16px; border: 1px solid var(--line);
+    border-radius: 12px; background: var(--panel);
+  }
+  .fold[open] > summary { border-radius: 12px 12px 0 0; border-bottom-color: transparent; }
+  .fold > summary::-webkit-details-marker { display: none; }
+  .fold > ol { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px; padding: 0 16px; }
+  .fold[open] > summary .chev { transform: rotate(180deg); }
+
+  .unres { margin-top: 34px; --accent: var(--dim); }
+  .unres-body { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px; padding: 14px 16px 4px; }
+  .cand { font-size: .93rem; color: var(--dim); line-height: 1.5; margin: 0 0 12px; }
   .cand b { color: var(--ink); }
-  footer { margin-top: 30px; font-size: .78rem; color: var(--dim); }
-  footer a { color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+  footer { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--dim); }
+  footer .home { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+  footer p { margin: 4px 0 0; }
+
+  /* One authored moment: the card lifts when the place changes. Nothing else moves. */
+  @keyframes settle { from { opacity: .35; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .card.changed { animation: settle .42s cubic-bezier(.16,.84,.44,1); }
+  @media (prefers-reduced-motion: reduce) { .card.changed { animation: none; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1 id="trip-title"></h1>
-    <div class="clock"><span id="clock">--</span><small id="today"></small></div>
+    <div>
+      <div class="trip-name" id="trip-name"></div>
+      <div class="day-name" id="day-name"></div>
+    </div>
+    <div class="clock" id="clock">--</div>
   </header>
   <p id="status" class="sr-only" aria-live="polite"></p>
-  <div id="live"></div>
-  <div id="rest"></div>
+  <main id="main">
+    <noscript>
+      <p class="note flag">This planner needs JavaScript to know what time it is.
+      The full schedule is in the repository, in the trip data file.</p>
+    </noscript>
+    <div id="live"></div>
+    <div id="rest"></div>
+  </main>
   <footer id="foot"></footer>
 </div>
 <script type="module">
@@ -95,126 +189,213 @@ __SCHEDULE__
 const TRIP = __TRIP__;
 
 const pad = (n) => String(n).padStart(2, "0");
-const hhmm = (mins) => pad(Math.floor(mins / 60) % 24) + ":" + pad(mins % 60);
-const $ = (sel, root = document) => root.querySelector(sel);
+const clock = (mins) => pad(Math.floor(mins / 60) % 24) + ":" + pad(mins % 60);
+const $ = (s, r = document) => r.querySelector(s);
+const make = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+};
 
-// Build one card shell. Fields are filled in place on every tick, so the DOM
-// is never thrown away. Rebuilding it would close open <details>, drop
-// keyboard focus, and clear any text the user selected.
-function cardShell(id) {
-  const el = document.createElement("div");
-  el.className = "card";
-  el.id = id;
-  el.innerHTML =
-    '<div class="kicker"></div>' +
-    '<p class="name"></p>' +
-    '<div class="when"></div>' +
-    '<div class="leave" hidden></div>' +
-    '<p class="note" hidden></p>' +
-    '<a class="maps" target="_blank" rel="noopener" hidden></a>';
-  return {
-    el,
-    kicker: $(".kicker", el),
-    name: $(".name", el),
-    when: $(".when", el),
-    leave: $(".leave", el),
-    note: $(".note", el),
-    maps: $(".maps", el),
-  };
+// "1 h 20 m left" beats "in 80 min": the phone owns the arithmetic, not the reader.
+function human(mins) {
+  const m = Math.abs(mins);
+  if (m < 60) return m + " min";
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? h + " h " + r + " m" : h + " h";
 }
 
-function fill(card, { kicker, name, when, leave, note, risk, maps, hot }) {
-  card.kicker.textContent = kicker;
-  card.kicker.classList.toggle("hot", !!hot);
-  card.el.classList.toggle("now", !!hot);
-  card.name.textContent = name;
-  card.when.textContent = when || "";
-  card.when.hidden = !when;
-  card.leave.textContent = leave ? leave.text : "";
-  card.leave.hidden = !leave;
-  if (leave) card.leave.classList.toggle("urgent", leave.urgent);
-  card.note.textContent = note || "";
-  card.note.hidden = !note;
-  card.note.classList.toggle("risk", !!risk);
-  if (maps) { card.maps.href = maps.href; card.maps.textContent = maps.label; }
-  card.maps.hidden = !maps;
+// Venue data carries closing times past midnight as 25 and 26. Show them as clock time.
+const closesAt = (it) => (it.hours ? clock(toMinutes(it.hours.close) % (24 * 60)) : null);
+
+function link(item, label, kind) {
+  const a = make("a", "btn " + kind, label);
+  a.href = item.maps;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.setAttribute("aria-label", label + ", opens Google Maps in a new tab");
+  return a;
 }
 
-const nowCard = cardShell("now-card");
-const nextCard = cardShell("next-card");
-$("#live").append(nowCard.el, nextCard.el);
+function noteEl(item) {
+  if (!item.note) return null;
+  // The data marks a booking or a risk by prefix. Strip the token; keep the emphasis.
+  const flag = /^(RISK:|BOOK )/.test(item.note);
+  const text = item.note.replace(/^RISK:\s*/, "");
+  return make("p", "note" + (flag ? " flag" : ""), text);
+}
 
-// Day lists are static content. Build them once; ticks only retag rows.
+function openState(item, nowMin, sameDay) {
+  if (!item.hours) return null;
+  const close = toMinutes(item.hours.close);
+  const end = toMinutes(item.end);
+  const el = make("p", "open-state");
+  if (sameDay && nowMin >= close) {
+    el.textContent = "Shut for the day";
+    el.className = "open-state shut";
+  } else if (close - end <= 30) {
+    el.textContent = "Tight: shuts " + closesAt(item) + ", you leave " + item.end;
+    el.className = "open-state shut";
+  } else {
+    el.textContent = "Open till " + closesAt(item);
+  }
+  return el;
+}
+
+/* ---------- the two live cards ---------- */
+const liveEl = $("#live");
+let lastKey = "";
+
+function buildHere(item, wall) {
+  const card = make("div", "card here");
+  card.append(make("p", "headline", item.name));
+  const left = toMinutes(item.end) - wall.minutes;
+  card.append(make("p", "meta", "Until " + item.end + " · " + human(left) + " left"));
+  card.append(make("p", "meta", item.address));
+  const os = openState(item, wall.minutes, true);
+  if (os) card.append(os);
+  const n = noteEl(item);
+  if (n) card.append(n);
+  const acts = make("div", "acts");
+  acts.append(link(item, "Open in Maps", "primary"));
+  card.append(acts);
+  return card;
+}
+
+function buildNext(item, wall, inDay) {
+  const card = make("div", "card");
+  if (inDay) {
+    const leaveAt = toMinutes(item.start) - (item.travelMin || 0);
+    const mins = leaveAt - wall.minutes;
+    // The instruction is the headline. Nothing on screen outranks it once it is due.
+    if (mins <= 0) {
+      card.classList.add("act");
+      card.append(make("p", "headline",
+        mins === 0 ? "Leave now" : "Leave now, " + human(mins) + " late"));
+    } else if (mins <= 30) {
+      card.classList.add("act");
+      card.append(make("p", "headline", "Leave in " + human(mins)));
+    } else {
+      card.append(make("p", "headline", "Leave at " + clock(leaveAt)));
+    }
+    card.append(make("p", "sub", item.name));
+    card.append(make("p", "meta",
+      (item.travelMode || "") + " " + (item.travelMin || 0) + " min · arrive " + item.start));
+  } else {
+    card.append(make("p", "headline", item.name));
+    card.append(make("p", "meta", "Starts " + item.start));
+  }
+  card.append(make("p", "meta", item.address));
+  const os = openState(item, wall.minutes, inDay);
+  if (os) card.append(os);
+  const n = noteEl(item);
+  if (n) card.append(n);
+  const acts = make("div", "acts");
+  acts.append(link(item, "Route there", card.classList.contains("act") ? "primary" : "second"));
+  card.append(acts);
+  return card;
+}
+
+function buildIdle(head, body) {
+  const card = make("div", "card");
+  card.append(make("p", "headline", head));
+  card.append(make("p", "meta", body));
+  return card;
+}
+
+/* ---------- day sections ---------- */
 const rows = new Map();
-let builtForDate = null;
+let builtFor = null;
+
+function chevron() {
+  const c = make("span", "chev");
+  c.innerHTML = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">'
+    + '<path d="M4 6.5 8 10.5 12 6.5" stroke="currentColor" stroke-width="1.75" '
+    + 'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return c;
+}
+
+function itemRow(day, item, dayIdx) {
+  const li = make("li");
+  const d = make("details");
+  const sum = make("summary", "row");
+  sum.append(make("span", "t", item.start), make("span", "n", item.name), chevron());
+  const body = make("div", "body");
+  body.append(make("p", "meta", item.start + "–" + item.end + " · " + item.address));
+  if (item.travelMin) {
+    body.append(make("p", "meta", (item.travelMode || "") + " " + item.travelMin + " min from the last stop"));
+  }
+  const os = openState(item, 0, false);
+  if (os) body.append(os);
+  const n = noteEl(item);
+  if (n) body.append(n);
+  const acts = make("div", "acts");
+  acts.append(link(item, "Route there", "second"));
+  body.append(acts);
+  d.append(sum, body);
+  li.append(d);
+  rows.set(day.date + "#" + item.id, { li, item });
+  return li;
+}
 
 function buildDays(todayDate) {
   const rest = $("#rest");
   rest.textContent = "";
   rows.clear();
   const days = [...TRIP.days].sort((a, b) => a.date.localeCompare(b.date));
+  // Today first. On the last day you should not scroll past two spent ones.
+  const order = [...days.filter((d) => d.date === todayDate), ...days.filter((d) => d.date !== todayDate)];
 
-  for (const day of days) {
-    const list = document.createElement("ol");
-    for (const it of day.items) {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.className = "row";
-      a.href = it.maps;
-      a.target = "_blank";
-      a.rel = "noopener";
-      const t = document.createElement("span");
-      t.className = "t";
-      t.textContent = it.start;
-      const b = document.createElement("span");
-      b.className = "b";
-      b.textContent = it.name;
-      a.append(t, b);
-      li.append(a);
-      list.append(li);
-      rows.set(day.date + "#" + it.id, { li, item: it });
-    }
+  for (const day of order) {
+    const idx = days.indexOf(day) + 1;
+    const sec = make("section", "day day-" + idx);
+    const list = make("ol");
+    for (const item of day.items) list.append(itemRow(day, item, idx));
+
     if (day.date === todayDate) {
-      const h = document.createElement("h2");
-      h.textContent = day.label;
-      rest.append(h, list);
+      sec.append(make("h2", null, day.label));
+      sec.append(list);
     } else {
-      const d = document.createElement("details");
-      const sum = document.createElement("summary");
-      sum.textContent = day.label;
-      d.append(sum, list);
-      rest.append(d);
+      sec.classList.add("folded");
+      const fold = make("details", "fold");
+      const sum = make("summary");
+      sum.append(make("span", null, day.label), chevron());
+      fold.append(sum, list);
+      sec.append(fold);
     }
+    rest.append(sec);
   }
 
-  for (const c of TRIP.candidates || []) {
-    if (c === (TRIP.candidates || [])[0]) {
-      const h = document.createElement("h2");
-      h.textContent = "Unresolved";
-      rest.append(h);
+  const cands = TRIP.candidates || [];
+  if (cands.length) {
+    const box = make("details", "fold unres");
+    const sum = make("summary");
+    sum.append(make("span", null, "Still unresolved (" + cands.length + ")"), chevron());
+    const inner = make("div", "unres-body");
+    for (const c of cands) {
+      const p = make("p", "cand");
+      p.append(make("b", null, c.name), document.createTextNode(" " + c.why));
+      inner.append(p);
     }
-    const p = document.createElement("p");
-    p.className = "cand";
-    const b = document.createElement("b");
-    b.textContent = c.name;
-    p.append(b, document.createTextNode(" " + c.why));
-    rest.append(p);
+    box.append(sum, inner);
+    rest.append(box);
   }
-  builtForDate = todayDate;
+  builtFor = todayDate;
 }
 
-const foot = $("#foot");
+/* ---------- footer, once ---------- */
 {
-  const a = document.createElement("a");
+  const foot = $("#foot");
+  const a = make("a", "home", TRIP.base.address);
   a.href = TRIP.base.maps;
   a.target = "_blank";
   a.rel = "noopener";
-  a.textContent = TRIP.base.address;
-  foot.append(document.createTextNode("Base: "), a,
-    document.createTextNode(". Clock is " + TRIP.timezone + ", whatever your phone says."));
+  a.setAttribute("aria-label", "Route home to " + TRIP.base.address + ", opens Google Maps in a new tab");
+  foot.append(a);
+  foot.append(make("p", null, "Clock is " + TRIP.timezone + ", whatever your phone says."));
+  $("#trip-name").textContent = TRIP.title;
 }
-$("#trip-title").textContent = TRIP.title;
-
 
 let announced = "";
 
@@ -222,77 +403,65 @@ function tick() {
   const now = Date.now();
   const wall = wallClock(now, TRIP.timezone);
   const r = resolve(TRIP, now);
+  const days = [...TRIP.days].sort((a, b) => a.date.localeCompare(b.date));
+  const today = days.find((d) => d.date === wall.date);
 
-  $("#clock").textContent = hhmm(wall.minutes);
-  const todayDay = TRIP.days.find((d) => d.date === wall.date);
-  $("#today").textContent = todayDay
-    ? todayDay.label.split("\u00b7")[0].trim()
+  $("#clock").textContent = clock(wall.minutes);
+  $("#day-name").textContent = today
+    ? today.label.split("·")[0].trim()
     : TRIP.timezone.split("/")[1].replace("_", " ");
-  if (wall.date !== builtForDate) buildDays(wall.date);
+  document.documentElement.style.setProperty(
+    "--accent", "var(--day-" + (today ? days.indexOf(today) + 1 : 1) + ")");
 
-  if (r.state === "during") {
-    fill(nowCard, {
-      hot: true,
-      kicker: "You should be here now",
-      name: r.current.name,
-      when: r.current.start + "–" + r.current.end + " · " + r.current.address,
-      note: r.current.note,
-      risk: /^RISK:|^BOOK /.test(r.current.note || ""),
-      maps: { href: r.current.maps, label: "Open in Maps" },
-    });
-  } else {
-    const copy = {
-      gap: ["Nothing scheduled right now", "Free", "Next up below."],
-      before: ["Not started yet", "Free", "The first day has not begun."],
-      done: ["Day done", "That is the lot", "Go to bed."],
-      after: ["Trip over", "Nothing left", "Hope it was good."],
-    }[r.state];
-    fill(nowCard, { kicker: copy[0], name: copy[1], when: copy[2] });
-  }
+  if (wall.date !== builtFor) buildDays(wall.date);
 
-  if (r.next) {
-    let leave = null;
-    if (r.day) {
-      const leaveAt = toMinutes(r.next.start) - (r.next.travelMin || 0);
-      const mins = leaveAt - wall.minutes;
-      const mode = r.next.travelMode || "";
-      const dur = (r.next.travelMin || 0) + " min";
-      leave = {
-        urgent: mins <= 15,
-        text: mins <= 0
-          ? "Leave now · " + mode + " " + dur
-          : "Leave by " + hhmm(leaveAt) + " · " + mode + " " + dur + " · in " + mins + " min",
-      };
+  // Rebuild the live pair only when its content actually changes, so the cards
+  // are stable under the thumb and the one animation means something.
+  const leaveMin = r.next && r.day
+    ? toMinutes(r.next.start) - (r.next.travelMin || 0) - wall.minutes
+    : null;
+  const key = [r.state, r.current?.id ?? "-", r.next?.id ?? "-",
+    leaveMin == null ? "-" : leaveMin, r.current ? toMinutes(r.current.end) - wall.minutes : "-"].join("|");
+
+  if (key !== lastKey) {
+    const placeChanged = (r.current?.id ?? "-") + r.state !== lastKey.split("|").slice(0, 2).join("");
+    liveEl.textContent = "";
+    if (r.state === "during") {
+      liveEl.append(buildHere(r.current, wall));
+    } else if (r.state === "gap" && leaveMin != null && leaveMin <= 30) {
+      // Nothing competes with the instruction to move.
+    } else if (r.state === "gap") {
+      liveEl.append(buildIdle("Nothing booked right now", "Next thing is below."));
+    } else if (r.state === "before") {
+      const first = days[0];
+      liveEl.append(buildIdle("The trip has not started",
+        "First day is " + first.label.split("·")[0].trim() + "."));
+    } else if (r.state === "done") {
+      liveEl.append(buildIdle("That is the day", "Nothing else is booked."));
+    } else {
+      liveEl.append(buildIdle("The trip is over", "Nothing left to be late for."));
     }
-    fill(nextCard, {
-      kicker: "Next",
-      name: r.next.name,
-      when: r.next.start + "–" + r.next.end + " · " + r.next.address,
-      leave,
-      note: r.next.note,
-      risk: /^RISK:|^BOOK /.test(r.next.note || ""),
-      maps: { href: r.next.maps, label: "Open in Maps" },
-    });
-    nextCard.el.hidden = false;
-  } else {
-    nextCard.el.hidden = true;
+    if (r.next) liveEl.append(buildNext(r.next, wall, !!r.day));
+    if (placeChanged) {
+      const first = liveEl.firstElementChild;
+      if (first) first.classList.add("changed");
+    }
+    lastKey = key;
   }
 
-  for (const [key, { li, item }] of rows) {
-    const today = key.startsWith(wall.date);
-    const active = today && toMinutes(item.start) <= wall.minutes && wall.minutes < toMinutes(item.end);
-    const past = today && wall.minutes >= toMinutes(item.end);
-    li.classList.toggle("active", active);
-    li.classList.toggle("past", past);
+  for (const [k, { li, item }] of rows) {
+    const isToday = k.startsWith(wall.date);
+    const here = isToday && toMinutes(item.start) <= wall.minutes && wall.minutes < toMinutes(item.end);
+    li.classList.toggle("here", here);
+    li.classList.toggle("spent", isToday && wall.minutes >= toMinutes(item.end));
   }
 
-  // Announce only when the place changes, never on the ticking countdown.
-  const key = r.state + ":" + (r.current ? r.current.id : "-");
-  if (key !== announced) {
-    announced = key;
+  const ann = r.state + ":" + (r.current ? r.current.id : "-");
+  if (ann !== announced) {
+    announced = ann;
     $("#status").textContent = r.current
       ? "Now: " + r.current.name
-      : nowCard.name.textContent;
+      : ($(".headline", liveEl)?.textContent || "");
   }
 }
 

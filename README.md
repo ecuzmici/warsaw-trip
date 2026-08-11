@@ -47,3 +47,18 @@ Set Pages to build from GitHub Actions:
 
 Do not point Pages at a branch folder. A branch folder publishes on push,
 before the check runs, which breaks G9.
+
+## Browser checks
+
+`npm run check` is the deploy gate. It never opens a browser, so it cannot see a
+runtime error, a contrast failure, or a tap target that is too small.
+
+Run the browser checks before you change the page:
+
+1. Run `npm install`.
+2. Run `npx playwright install chromium`.
+3. Run `npm run check:browser`.
+
+The script measures contrast, tap targets, horizontal overflow and console
+errors in 6 schedule states, 2 viewports and both themes. It then opens 3
+nested disclosures and confirms they survive a clock tick.

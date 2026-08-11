@@ -5,6 +5,10 @@
   "scripts": {
     "test": "node --test",
     "build": "node build.mjs",
-    "check": "node --test && node build.mjs && node check.mjs"
+    "check": "node --test && node build.mjs && node check.mjs",
+    "check:browser": "node tools/browser.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
   }
 }

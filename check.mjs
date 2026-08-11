@@ -59,7 +59,7 @@ for (const day of trip.days) {
 }
 
 // G8 — no location name, address, or time lives outside data/trip.json.
-const SOURCE_DIRS = ["src", "test"];
+const SOURCE_DIRS = ["src", "test", "tools"];
 const sources = [];
 for (const dir of SOURCE_DIRS) {
   if (!existsSync(dir)) continue;
