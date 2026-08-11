@@ -29,7 +29,11 @@ const AUDIT = () => {
     if (cs.display === "none" || cs.visibility === "hidden") continue;
     const r = el.getBoundingClientRect();
     const direct = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
-    if (direct && r.width && r.height) {
+    // A colour emoji paints its own palette and ignores the CSS color property,
+    // so a text-contrast ratio computed from that colour is meaningless. Pictographs
+    // are images, not text, and WCAG 1.4.3 does not cover them.
+    const pictOnly = direct && /^[\p{Extended_Pictographic}\uFE0E\uFE0F\u200D\s]+$/u.test(el.textContent);
+    if (direct && !pictOnly && r.width && r.height) {
       let op = 1, n = el; while (n && n !== document.documentElement) { op *= +getComputedStyle(n).opacity; n = n.parentElement; }
       const fg = parse(cs.color); const bg = bgOf(el);
       if (fg) {

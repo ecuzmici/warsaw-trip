@@ -4,171 +4,193 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="__TITLE__ — where to be, and when to leave.">
-<meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#12141b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#e6efe8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a16" media="(prefers-color-scheme: dark)">
 <title>__TITLE__</title>
 <style>
-  /* Light is the primary scene: this is read outdoors, in August sun. */
+__FONTS__
+
+  /* Milk-bar enamel: painted plaques, dotted rules, one colour per day.
+     Light is the primary scene. This gets read outdoors in August. */
   :root {
-    --bg: #faf7f2;
-    --panel: #ffffff;
-    --ink: #14161b;
-    --dim: #5b6270;
-    --mute: #656c7a;          /* spent rows: measured at 4.94:1, never an opacity fade */
-    --line: #d5d2c9;
-    --edge: #b9b5a9;
+    --bg: #e6efe8;
+    --panel: #fffef9;
+    --ink: #17231c;
+    --dim: #4d6156;
+    --mute: #566b5f;         /* spent rows, measured at 4.88:1 on the ground */
+    --line: #c3d3c8;
+    --edge: #a9bdaf;
     --ok: #1f6b45;
     --warn: #8a5000;
-    --on-accent: #ffffff;
-    --day-1: #a8452b;
-    --day-2: #7a3a6e;
-    --day-3: #1c5f6b;
+    --alarm: #b03a2e;
+    --on-accent: #fffef9;
+    --day-1: #a8382a;
+    --day-2: #1f5c8b;
+    --day-3: #2c6b4a;
     --accent: var(--day-1);
-    --sel: #f2ddd4;
-    --radius: 14px;
-    --gut: 18px;
+    --sel: #ffe0a8;
+    --shadow: 0 3px 0 rgba(23, 35, 28, .14);
+    --disp: Anton, Impact, Haettenschweiler, sans-serif;
+    --body: Archivo, ui-sans-serif, system-ui, -apple-system, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #12141b; --panel: #1a1d26; --ink: #eef0f4; --dim: #a2aab8;
-      --mute: #8b93a2; --line: #2b3040; --edge: #3d4354;
-      --ok: #74d3a2; --warn: #f0bc63; --on-accent: #12141b;
-      --day-1: #ff9070; --day-2: #e79ad6; --day-3: #6fd0e0;
-      --sel: #43301f;
+      --bg: #121a16; --panel: #1b241e; --ink: #e9f0ea; --dim: #9db0a4;
+      --mute: #8ba193; --line: #2c3a32; --edge: #435248;
+      --ok: #74d3a2; --warn: #f0bc63; --alarm: #ff8f78;
+      --on-accent: #121a16;
+      --day-1: #ff9478; --day-2: #7cc0f0; --day-3: #79d3a4;
+      --sel: #4a3a12; --shadow: 0 3px 0 rgba(0, 0, 0, .38);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #12141b; --panel: #1a1d26; --ink: #eef0f4; --dim: #a2aab8;
-    --mute: #8b93a2; --line: #2b3040; --edge: #3d4354;
-    --ok: #74d3a2; --warn: #f0bc63; --on-accent: #12141b;
-    --day-1: #ff9070; --day-2: #e79ad6; --day-3: #6fd0e0;
-    --sel: #43301f;
+    --bg: #121a16; --panel: #1b241e; --ink: #e9f0ea; --dim: #9db0a4;
+    --mute: #8ba193; --line: #2c3a32; --edge: #435248;
+    --ok: #74d3a2; --warn: #f0bc63; --alarm: #ff8f78;
+    --on-accent: #121a16;
+    --day-1: #ff9478; --day-2: #7cc0f0; --day-3: #79d3a4;
+    --sel: #4a3a12; --shadow: 0 3px 0 rgba(0, 0, 0, .38);
   }
 
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   html { scrollbar-color: var(--edge) transparent; }
   ::selection { background: var(--sel); color: var(--ink); }
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar { width: 10px; }
   ::-webkit-scrollbar-thumb { background: var(--edge); border-radius: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
 
   body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 var(--body);
     font-variant-numeric: tabular-nums;
     caret-color: var(--accent);
     padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
     -webkit-text-size-adjust: 100%;
   }
-  .wrap { max-width: 34rem; margin: 0 auto; padding: 18px var(--gut) 64px; }
+  .wrap { max-width: 34rem; margin: 0 auto; padding: 16px 15px 60px; }
   .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
-  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+  .em {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    font-style: normal; line-height: 1;
+  }
 
   /* ---- header ---- */
-  header {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    gap: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 22px;
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; padding: 4px 3px 16px; }
+  .trip { font-size: .66rem; letter-spacing: .17em; text-transform: uppercase; color: var(--dim); font-weight: 700; }
+  .day-name {
+    font-family: var(--disp); font-size: 1.72rem; text-transform: uppercase;
+    letter-spacing: .005em; line-height: 1; margin-top: 5px; color: var(--accent);
   }
-  .day-name { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
-  .trip-name { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
-  .clock { font-size: 2.1rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .clock { font-family: var(--disp); font-size: 2.35rem; line-height: .9; letter-spacing: .005em; }
 
-  /* ---- the two live cards ---- */
-  .card {
-    background: var(--panel); border: 1px solid var(--line);
-    border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
+  /* ---- plaques ---- */
+  .plaque { background: var(--panel); border-radius: 20px; padding: 6px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .inner { border: 2.5px solid var(--accent); border-radius: 15px; padding: 15px; }
+  .plaque.go .inner { border-color: var(--alarm); }
+  .plaque.quiet .inner { border-color: var(--edge); border-style: dashed; }
+  .cap { display: flex; align-items: center; gap: 11px; margin-bottom: 11px; }
+  .chip {
+    width: 48px; height: 48px; border-radius: 14px; background: var(--accent);
+    display: grid; place-items: center; flex: none;
   }
-  .card.here { border: 2px solid var(--accent); padding: 17px; }
-  .card.act { border: 2px solid var(--warn); padding: 17px; }
+  .plaque.go .chip { background: var(--alarm); }
+  .plaque.quiet .chip { background: var(--edge); }
+  .chip .em { font-size: 1.6rem; }
+  .lbl { font-size: .66rem; text-transform: uppercase; letter-spacing: .13em; font-weight: 700; color: var(--accent); }
+  .plaque.go .lbl { color: var(--alarm); }
+  .plaque.quiet .lbl { color: var(--dim); }
   .headline {
-    font-size: 1.62rem; font-weight: 700; line-height: 1.15;
-    letter-spacing: -0.025em; margin: 0 0 6px; text-wrap: balance;
+    font-family: var(--disp); font-size: 1.55rem; line-height: 1.08;
+    text-transform: uppercase; letter-spacing: .005em; margin: 0 0 7px; text-wrap: balance;
   }
   /* When a departure is due the instruction matches the clock. Nothing outranks it. */
-  .card.act .headline { color: var(--warn); font-size: 2.1rem; letter-spacing: -0.03em; }
-  .sub { font-size: 1.05rem; font-weight: 600; line-height: 1.3; margin: 0 0 6px; }
-  .meta { font-size: .92rem; color: var(--dim); line-height: 1.45; }
-  .open-state { font-size: .92rem; font-weight: 600; color: var(--ok); margin-top: 6px; }
+  .plaque.go .headline { color: var(--alarm); font-size: 2.35rem; line-height: 1; }
+  .sub { font-family: var(--disp); font-size: 1.2rem; text-transform: uppercase; margin: 0 0 6px; line-height: 1.1; }
+  .meta { font-size: .9rem; color: var(--dim); line-height: 1.45; }
+  .open-state { font-size: .9rem; font-weight: 600; color: var(--ok); margin-top: 6px; }
   .open-state.shut { color: var(--warn); }
-  .note { margin: 12px 0 0; font-size: .95rem; line-height: 1.5; }
+  .note { margin: 11px 0 0; font-size: .93rem; line-height: 1.5; }
   .note.flag { color: var(--warn); font-weight: 600; }
-  .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
   .btn {
-    display: inline-flex; align-items: center; min-height: 46px;
-    padding: 0 18px; border-radius: 10px; font: inherit; font-weight: 650;
-    font-size: .95rem; text-decoration: none; cursor: pointer;
+    display: inline-flex; align-items: center; min-height: 46px; padding: 0 17px;
+    border-radius: 12px; font: inherit; font-weight: 600; font-size: .93rem;
+    text-decoration: none; cursor: pointer;
   }
   .btn.primary { background: var(--accent); color: var(--on-accent); border: 2px solid var(--accent); }
+  .plaque.go .btn.primary { background: var(--alarm); border-color: var(--alarm); color: var(--panel); }
   .btn.second { background: transparent; color: var(--ink); border: 2px solid var(--edge); }
 
-  /* ---- day sections ---- */
-  .day { margin-top: 34px; }
-  .day > h2 {
-    font-size: .76rem; text-transform: uppercase; letter-spacing: .12em;
-    color: var(--accent); font-weight: 700; margin: 0 0 4px;
-  }
+  /* ---- day strips ---- */
+  .day { margin-top: 26px; }
   .day-1 { --accent: var(--day-1); }
   .day-2 { --accent: var(--day-2); }
   .day-3 { --accent: var(--day-3); }
+  .day > h2 {
+    font-family: var(--disp); font-size: 1.05rem; text-transform: uppercase;
+    letter-spacing: .02em; color: var(--accent); margin: 0 0 8px; padding-left: 3px; font-weight: 400;
+  }
+  .strip { background: var(--panel); border-radius: 20px; box-shadow: var(--shadow); padding: 2px 14px; }
   ol { list-style: none; margin: 0; padding: 0; }
-  li { border-bottom: 1px solid var(--line); }
+  li { border-bottom: 1.5px dotted var(--line); }
   li:last-child { border-bottom: 0; }
   .row {
-    display: flex; gap: 14px; align-items: baseline; width: 100%;
-    min-height: 52px; padding: 14px 2px; background: none; border: 0;
-    font: inherit; color: inherit; text-align: left; cursor: pointer;
+    display: flex; gap: 11px; align-items: center; width: 100%; min-height: 52px;
+    padding: 13px 2px; background: none; border: 0; font: inherit; color: inherit;
+    text-align: left; cursor: pointer;
   }
   .row::-webkit-details-marker { display: none; }
-  .row .t { color: var(--dim); font-size: .92rem; min-width: 4.3em; flex: none; }
-  .row .n { flex: 1; min-width: 0; }
+  .row .em { font-size: 1.3rem; width: 26px; text-align: center; flex: none; }
+  .row .t { color: var(--dim); font-size: .88rem; font-weight: 600; width: 3.6em; flex: none; }
+  .row .n { flex: 1; min-width: 0; font-size: .93rem; font-weight: 500; }
   li.spent .row .t, li.spent .row .n { color: var(--mute); }
   li.here .row .n { color: var(--accent); font-weight: 700; }
   li.here .row .t { color: var(--accent); }
-  .chev { flex: none; align-self: center; color: var(--edge); transition: none; }
+  .chev { flex: none; color: var(--edge); }
   .chev svg { display: block; width: 14px; height: 14px; }
   details[open] > .row .chev { color: var(--accent); transform: rotate(180deg); }
-  .body { padding: 0 2px 16px 2px; }
-  .body .meta { margin-bottom: 4px; }
-  .body .note { margin-top: 8px; }
+  .body { padding: 0 2px 15px 37px; }
+  .body .meta { margin-bottom: 3px; }
 
-  /* ---- collapsed day ---- */
-  .day.folded { margin-top: 10px; }
+  /* ---- folded day / unresolved ---- */
   .fold > summary {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    min-height: 56px; cursor: pointer; font-weight: 650; color: var(--accent);
-    font-size: .95rem; padding: 14px 16px; border: 1px solid var(--line);
-    border-radius: 12px; background: var(--panel);
+    min-height: 56px; cursor: pointer; padding: 12px 16px; background: var(--panel);
+    border-radius: 20px; box-shadow: var(--shadow);
+    font-family: var(--disp); font-size: 1.05rem; text-transform: uppercase;
+    letter-spacing: .02em; color: var(--accent); font-weight: 400;
   }
-  .fold[open] > summary { border-radius: 12px 12px 0 0; border-bottom-color: transparent; }
   .fold > summary::-webkit-details-marker { display: none; }
-  .fold > ol { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px; padding: 0 16px; }
-  .fold[open] > summary .chev { transform: rotate(180deg); }
+  .fold[open] > summary { border-radius: 20px 20px 0 0; box-shadow: none; }
+  .fold > .strip { border-radius: 0 0 20px 20px; }
+  .unres { --accent: var(--dim); }
+  .unres .cand { font-size: .9rem; color: var(--dim); line-height: 1.5; margin: 0 0 12px; }
+  .unres .cand b { color: var(--ink); }
+  .unres .pad { background: var(--panel); border-radius: 0 0 20px 20px; box-shadow: var(--shadow); padding: 14px 16px 4px; }
 
-  .unres { margin-top: 34px; --accent: var(--dim); }
-  .unres-body { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px; padding: 14px 16px 4px; }
-  .cand { font-size: .93rem; color: var(--dim); line-height: 1.5; margin: 0 0 12px; }
-  .cand b { color: var(--ink); }
-  footer { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--dim); }
-  footer .home { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
-  footer p { margin: 4px 0 0; }
+  footer { margin-top: 30px; padding: 0 3px; font-size: .84rem; color: var(--dim); }
+  footer .home {
+    display: inline-flex; align-items: center; min-height: 44px; color: var(--ink);
+    font-weight: 600; text-decoration: underline; text-underline-offset: 4px;
+  }
+  footer p { margin: 2px 0 0; }
 
-  /* One authored moment: the card lifts when the place changes. Nothing else moves. */
-  @keyframes settle { from { opacity: .35; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .card.changed { animation: settle .42s cubic-bezier(.16,.84,.44,1); }
-  @media (prefers-reduced-motion: reduce) { .card.changed { animation: none; } }
+  /* One authored moment: the plaque settles when the place changes. */
+  @keyframes settle { from { opacity: .4; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+  .plaque.changed { animation: settle .4s cubic-bezier(.16, .84, .44, 1); }
+  @media (prefers-reduced-motion: reduce) { .plaque.changed { animation: none; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
-      <div class="trip-name" id="trip-name"></div>
+      <div class="trip" id="trip-name"></div>
       <div class="day-name" id="day-name"></div>
     </div>
     <div class="clock" id="clock">--</div>
@@ -198,6 +220,7 @@ const make = (tag, cls, text) => {
   if (text != null) e.textContent = text;
   return e;
 };
+const emoji = (glyph) => make("i", "em", glyph || "");
 
 // "1 h 20 m left" beats "in 80 min": the phone owns the arithmetic, not the reader.
 function human(mins) {
@@ -209,6 +232,14 @@ function human(mins) {
 
 // Venue data carries closing times past midnight as 25 and 26. Show them as clock time.
 const closesAt = (it) => (it.hours ? clock(toMinutes(it.hours.close) % (24 * 60)) : null);
+
+function chevron() {
+  const c = make("span", "chev");
+  c.innerHTML = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">'
+    + '<path d="M4 6.5 8 10.5 12 6.5" stroke="currentColor" stroke-width="1.75" '
+    + 'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return c;
+}
 
 function link(item, label, kind) {
   const a = make("a", "btn " + kind, label);
@@ -223,19 +254,17 @@ function noteEl(item) {
   if (!item.note) return null;
   // The data marks a booking or a risk by prefix. Strip the token; keep the emphasis.
   const flag = /^(RISK:|BOOK )/.test(item.note);
-  const text = item.note.replace(/^RISK:\s*/, "");
-  return make("p", "note" + (flag ? " flag" : ""), text);
+  return make("p", "note" + (flag ? " flag" : ""), item.note.replace(/^RISK:\s*/, ""));
 }
 
 function openState(item, nowMin, sameDay) {
   if (!item.hours) return null;
   const close = toMinutes(item.hours.close);
-  const end = toMinutes(item.end);
   const el = make("p", "open-state");
   if (sameDay && nowMin >= close) {
     el.textContent = "Shut for the day";
     el.className = "open-state shut";
-  } else if (close - end <= 30) {
+  } else if (close - toMinutes(item.end) <= 30) {
     el.textContent = "Tight: shuts " + closesAt(item) + ", you leave " + item.end;
     el.className = "open-state shut";
   } else {
@@ -244,84 +273,91 @@ function openState(item, nowMin, sameDay) {
   return el;
 }
 
-/* ---------- the two live cards ---------- */
+function plaque(kind) {
+  const p = make("div", "plaque" + (kind ? " " + kind : ""));
+  const inner = make("div", "inner");
+  p.append(inner);
+  return { p, inner };
+}
+
+function cap(glyph, label) {
+  const c = make("div", "cap");
+  const chip = make("div", "chip");
+  chip.append(emoji(glyph));
+  c.append(chip, make("div", "lbl", label));
+  return c;
+}
+
+/* ---------- the live pair ---------- */
 const liveEl = $("#live");
 let lastKey = "";
 
 function buildHere(item, wall) {
-  const card = make("div", "card here");
-  card.append(make("p", "headline", item.name));
+  const { p, inner } = plaque();
+  inner.append(cap(item.emoji, "You are here"));
+  inner.append(make("p", "headline", item.name));
   const left = toMinutes(item.end) - wall.minutes;
-  card.append(make("p", "meta", "Until " + item.end + " · " + human(left) + " left"));
-  card.append(make("p", "meta", item.address));
+  inner.append(make("p", "meta", "Until " + item.end + " · " + human(left) + " left"));
+  inner.append(make("p", "meta", item.address));
   const os = openState(item, wall.minutes, true);
-  if (os) card.append(os);
+  if (os) inner.append(os);
   const n = noteEl(item);
-  if (n) card.append(n);
+  if (n) inner.append(n);
   const acts = make("div", "acts");
   acts.append(link(item, "Open in Maps", "primary"));
-  card.append(acts);
-  return card;
+  inner.append(acts);
+  return p;
 }
 
 function buildNext(item, wall, inDay) {
-  const card = make("div", "card");
+  let due = false, head = null;
   if (inDay) {
-    const leaveAt = toMinutes(item.start) - (item.travelMin || 0);
-    const mins = leaveAt - wall.minutes;
-    // The instruction is the headline. Nothing on screen outranks it once it is due.
-    if (mins <= 0) {
-      card.classList.add("act");
-      card.append(make("p", "headline",
-        mins === 0 ? "Leave now" : "Leave now, " + human(mins) + " late"));
-    } else if (mins <= 30) {
-      card.classList.add("act");
-      card.append(make("p", "headline", "Leave in " + human(mins)));
-    } else {
-      card.append(make("p", "headline", "Leave at " + clock(leaveAt)));
-    }
-    card.append(make("p", "sub", item.name));
-    card.append(make("p", "meta",
+    const mins = toMinutes(item.start) - (item.travelMin || 0) - wall.minutes;
+    due = mins <= 30;
+    head = mins < 0 ? "Leave now, " + human(mins) + " late"
+      : mins === 0 ? "Leave now"
+      : due ? "Leave in " + human(mins)
+      : "Leave at " + clock(toMinutes(item.start) - (item.travelMin || 0));
+  }
+  const { p, inner } = plaque(due ? "go" : "");
+  inner.append(cap(item.emoji, due ? "Move" : inDay ? "Next" : "First up"));
+  if (inDay) {
+    inner.append(make("p", "headline", head));
+    inner.append(make("p", "sub", item.name));
+    inner.append(make("p", "meta",
       (item.travelMode || "") + " " + (item.travelMin || 0) + " min · arrive " + item.start));
   } else {
-    card.append(make("p", "headline", item.name));
-    card.append(make("p", "meta", "Starts " + item.start));
+    inner.append(make("p", "headline", item.name));
+    inner.append(make("p", "meta", "Starts " + item.start));
   }
-  card.append(make("p", "meta", item.address));
+  inner.append(make("p", "meta", item.address));
   const os = openState(item, wall.minutes, inDay);
-  if (os) card.append(os);
+  if (os) inner.append(os);
   const n = noteEl(item);
-  if (n) card.append(n);
+  if (n) inner.append(n);
   const acts = make("div", "acts");
-  acts.append(link(item, "Route there", card.classList.contains("act") ? "primary" : "second"));
-  card.append(acts);
-  return card;
+  acts.append(link(item, "Route there", due ? "primary" : "second"));
+  inner.append(acts);
+  return p;
 }
 
-function buildIdle(head, body) {
-  const card = make("div", "card");
-  card.append(make("p", "headline", head));
-  card.append(make("p", "meta", body));
-  return card;
+function buildIdle(glyph, label, head, body) {
+  const { p, inner } = plaque("quiet");
+  inner.append(cap(glyph, label));
+  inner.append(make("p", "headline", head));
+  inner.append(make("p", "meta", body));
+  return p;
 }
 
-/* ---------- day sections ---------- */
+/* ---------- day strips ---------- */
 const rows = new Map();
 let builtFor = null;
 
-function chevron() {
-  const c = make("span", "chev");
-  c.innerHTML = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">'
-    + '<path d="M4 6.5 8 10.5 12 6.5" stroke="currentColor" stroke-width="1.75" '
-    + 'stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  return c;
-}
-
-function itemRow(day, item, dayIdx) {
+function itemRow(day, item) {
   const li = make("li");
   const d = make("details");
   const sum = make("summary", "row");
-  sum.append(make("span", "t", item.start), make("span", "n", item.name), chevron());
+  sum.append(emoji(item.emoji), make("span", "t", item.start), make("span", "n", item.name), chevron());
   const body = make("div", "body");
   body.append(make("p", "meta", item.start + "–" + item.end + " · " + item.address));
   if (item.travelMin) {
@@ -349,20 +385,19 @@ function buildDays(todayDate) {
   const order = [...days.filter((d) => d.date === todayDate), ...days.filter((d) => d.date !== todayDate)];
 
   for (const day of order) {
-    const idx = days.indexOf(day) + 1;
-    const sec = make("section", "day day-" + idx);
+    const sec = make("section", "day day-" + (days.indexOf(day) + 1));
+    const strip = make("div", "strip");
     const list = make("ol");
-    for (const item of day.items) list.append(itemRow(day, item, idx));
+    for (const item of day.items) list.append(itemRow(day, item));
+    strip.append(list);
 
     if (day.date === todayDate) {
-      sec.append(make("h2", null, day.label));
-      sec.append(list);
+      sec.append(make("h2", null, day.label), strip);
     } else {
-      sec.classList.add("folded");
       const fold = make("details", "fold");
       const sum = make("summary");
       sum.append(make("span", null, day.label), chevron());
-      fold.append(sum, list);
+      fold.append(sum, strip);
       sec.append(fold);
     }
     rest.append(sec);
@@ -370,17 +405,19 @@ function buildDays(todayDate) {
 
   const cands = TRIP.candidates || [];
   if (cands.length) {
-    const box = make("details", "fold unres");
+    const sec = make("section", "day unres");
+    const fold = make("details", "fold");
     const sum = make("summary");
     sum.append(make("span", null, "Still unresolved (" + cands.length + ")"), chevron());
-    const inner = make("div", "unres-body");
+    const pad = make("div", "pad");
     for (const c of cands) {
-      const p = make("p", "cand");
-      p.append(make("b", null, c.name), document.createTextNode(" " + c.why));
-      inner.append(p);
+      const para = make("p", "cand");
+      para.append(make("b", null, c.name), document.createTextNode(" " + c.why));
+      pad.append(para);
     }
-    box.append(sum, inner);
-    rest.append(box);
+    fold.append(sum, pad);
+    sec.append(fold);
+    rest.append(sec);
   }
   builtFor = todayDate;
 }
@@ -416,37 +453,33 @@ function tick() {
 
   if (wall.date !== builtFor) buildDays(wall.date);
 
-  // Rebuild the live pair only when its content actually changes, so the cards
-  // are stable under the thumb and the one animation means something.
   const leaveMin = r.next && r.day
     ? toMinutes(r.next.start) - (r.next.travelMin || 0) - wall.minutes
     : null;
   const key = [r.state, r.current?.id ?? "-", r.next?.id ?? "-",
-    leaveMin == null ? "-" : leaveMin, r.current ? toMinutes(r.current.end) - wall.minutes : "-"].join("|");
+    leaveMin ?? "-", r.current ? toMinutes(r.current.end) - wall.minutes : "-"].join("|");
 
+  // Rebuild the live pair only when its content changes, so the plaques stay
+  // steady under the thumb and the one animation still means something.
   if (key !== lastKey) {
-    const placeChanged = (r.current?.id ?? "-") + r.state !== lastKey.split("|").slice(0, 2).join("");
+    const placeChanged = lastKey.split("|").slice(0, 2).join("|") !== [r.state, r.current?.id ?? "-"].join("|");
     liveEl.textContent = "";
     if (r.state === "during") {
       liveEl.append(buildHere(r.current, wall));
     } else if (r.state === "gap" && leaveMin != null && leaveMin <= 30) {
       // Nothing competes with the instruction to move.
     } else if (r.state === "gap") {
-      liveEl.append(buildIdle("Nothing booked right now", "Next thing is below."));
+      liveEl.append(buildIdle("☕", "Free", "Nothing booked", "Next thing is below."));
     } else if (r.state === "before") {
-      const first = days[0];
-      liveEl.append(buildIdle("The trip has not started",
-        "First day is " + first.label.split("·")[0].trim() + "."));
+      liveEl.append(buildIdle("🧳", "Soon", "Not started yet",
+        "First day is " + days[0].label.split("·")[0].trim() + "."));
     } else if (r.state === "done") {
-      liveEl.append(buildIdle("That is the day", "Nothing else is booked."));
+      liveEl.append(buildIdle("🌙", "Done", "That is the day", "Nothing else is booked."));
     } else {
-      liveEl.append(buildIdle("The trip is over", "Nothing left to be late for."));
+      liveEl.append(buildIdle("👋", "Over", "The trip is over", "Nothing left to be late for."));
     }
     if (r.next) liveEl.append(buildNext(r.next, wall, !!r.day));
-    if (placeChanged) {
-      const first = liveEl.firstElementChild;
-      if (first) first.classList.add("changed");
-    }
+    if (placeChanged && liveEl.firstElementChild) liveEl.firstElementChild.classList.add("changed");
     lastKey = key;
   }
 
