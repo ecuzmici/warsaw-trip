@@ -25,6 +25,11 @@
     --on-accent: #11131a;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
     font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -79,7 +84,8 @@
     <h1 id="trip-title"></h1>
     <div class="clock"><span id="clock">--</span><small id="today"></small></div>
   </header>
-  <div id="live" aria-live="polite"></div>
+  <p id="status" class="sr-only" aria-live="polite"></p>
+  <div id="live"></div>
   <div id="rest"></div>
   <footer id="foot"></footer>
 </div>
@@ -90,98 +96,210 @@ const TRIP = __TRIP__;
 
 const pad = (n) => String(n).padStart(2, "0");
 const hhmm = (mins) => pad(Math.floor(mins / 60) % 24) + ":" + pad(mins % 60);
-const el = (html) => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const $ = (sel, root = document) => root.querySelector(sel);
 
-function mapsBtn(item, label) {
-  return `<a class="maps" href="${esc(item.maps)}" target="_blank" rel="noopener">${esc(label)}</a>`;
+// Build one card shell. Fields are filled in place on every tick, so the DOM
+// is never thrown away. Rebuilding it would close open <details>, drop
+// keyboard focus, and clear any text the user selected.
+function cardShell(id) {
+  const el = document.createElement("div");
+  el.className = "card";
+  el.id = id;
+  el.innerHTML =
+    '<div class="kicker"></div>' +
+    '<p class="name"></p>' +
+    '<div class="when"></div>' +
+    '<div class="leave" hidden></div>' +
+    '<p class="note" hidden></p>' +
+    '<a class="maps" target="_blank" rel="noopener" hidden></a>';
+  return {
+    el,
+    kicker: $(".kicker", el),
+    name: $(".name", el),
+    when: $(".when", el),
+    leave: $(".leave", el),
+    note: $(".note", el),
+    maps: $(".maps", el),
+  };
 }
 
-function card(kicker, item, opts = {}) {
-  const risk = /^RISK:|^BOOK /.test(item.note || "");
-  return `
-    <div class="card${opts.now ? " now" : ""}">
-      <div class="kicker${opts.now ? " hot" : ""}">${esc(kicker)}</div>
-      <p class="name">${esc(item.name)}</p>
-      <div class="when">${esc(item.start)}&ndash;${esc(item.end)} &middot; ${esc(item.address)}</div>
-      ${opts.leave || ""}
-      ${item.note ? `<p class="note${risk ? " risk" : ""}">${esc(item.note)}</p>` : ""}
-      ${mapsBtn(item, "Open in Maps")}
-    </div>`;
+function fill(card, { kicker, name, when, leave, note, risk, maps, hot }) {
+  card.kicker.textContent = kicker;
+  card.kicker.classList.toggle("hot", !!hot);
+  card.el.classList.toggle("now", !!hot);
+  card.name.textContent = name;
+  card.when.textContent = when || "";
+  card.when.hidden = !when;
+  card.leave.textContent = leave ? leave.text : "";
+  card.leave.hidden = !leave;
+  if (leave) card.leave.classList.toggle("urgent", leave.urgent);
+  card.note.textContent = note || "";
+  card.note.hidden = !note;
+  card.note.classList.toggle("risk", !!risk);
+  if (maps) { card.maps.href = maps.href; card.maps.textContent = maps.label; }
+  card.maps.hidden = !maps;
 }
 
-function dayList(day, nowMin, isToday) {
-  const rows = day.items.map((it) => {
-    const active = isToday && toMinutes(it.start) <= nowMin && nowMin < toMinutes(it.end);
-    const past = isToday && nowMin >= toMinutes(it.end);
-    return `<li class="${active ? "active" : past ? "past" : ""}">
-        <a class="row" href="${esc(it.maps)}" target="_blank" rel="noopener">
-          <span class="t">${esc(it.start)}</span>
-          <span class="b">${esc(it.name)}</span>
-        </a>
-      </li>`;
-  }).join("");
-  return `<ol>${rows}</ol>`;
+const nowCard = cardShell("now-card");
+const nextCard = cardShell("next-card");
+$("#live").append(nowCard.el, nextCard.el);
+
+// Day lists are static content. Build them once; ticks only retag rows.
+const rows = new Map();
+let builtForDate = null;
+
+function buildDays(todayDate) {
+  const rest = $("#rest");
+  rest.textContent = "";
+  rows.clear();
+  const days = [...TRIP.days].sort((a, b) => a.date.localeCompare(b.date));
+
+  for (const day of days) {
+    const list = document.createElement("ol");
+    for (const it of day.items) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.className = "row";
+      a.href = it.maps;
+      a.target = "_blank";
+      a.rel = "noopener";
+      const t = document.createElement("span");
+      t.className = "t";
+      t.textContent = it.start;
+      const b = document.createElement("span");
+      b.className = "b";
+      b.textContent = it.name;
+      a.append(t, b);
+      li.append(a);
+      list.append(li);
+      rows.set(day.date + "#" + it.id, { li, item: it });
+    }
+    if (day.date === todayDate) {
+      const h = document.createElement("h2");
+      h.textContent = day.label;
+      rest.append(h, list);
+    } else {
+      const d = document.createElement("details");
+      const sum = document.createElement("summary");
+      sum.textContent = day.label;
+      d.append(sum, list);
+      rest.append(d);
+    }
+  }
+
+  for (const c of TRIP.candidates || []) {
+    if (c === (TRIP.candidates || [])[0]) {
+      const h = document.createElement("h2");
+      h.textContent = "Unresolved";
+      rest.append(h);
+    }
+    const p = document.createElement("p");
+    p.className = "cand";
+    const b = document.createElement("b");
+    b.textContent = c.name;
+    p.append(b, document.createTextNode(" " + c.why));
+    rest.append(p);
+  }
+  builtForDate = todayDate;
 }
 
-function render() {
+const foot = $("#foot");
+{
+  const a = document.createElement("a");
+  a.href = TRIP.base.maps;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.textContent = TRIP.base.address;
+  foot.append(document.createTextNode("Base: "), a,
+    document.createTextNode(". Clock is " + TRIP.timezone + ", whatever your phone says."));
+}
+$("#trip-title").textContent = TRIP.title;
+
+
+let announced = "";
+
+function tick() {
   const now = Date.now();
   const wall = wallClock(now, TRIP.timezone);
   const r = resolve(TRIP, now);
 
-  document.getElementById("trip-title").textContent = TRIP.title;
-  document.getElementById("clock").textContent = hhmm(wall.minutes);
-  document.getElementById("today").textContent = TRIP.timezone.split("/")[1].replace("_", " ");
+  $("#clock").textContent = hhmm(wall.minutes);
+  const todayDay = TRIP.days.find((d) => d.date === wall.date);
+  $("#today").textContent = todayDay
+    ? todayDay.label.split("\u00b7")[0].trim()
+    : TRIP.timezone.split("/")[1].replace("_", " ");
+  if (wall.date !== builtForDate) buildDays(wall.date);
 
-  const live = [];
   if (r.state === "during") {
-    live.push(card("You should be here now", r.current, { now: true }));
-  } else if (r.state === "gap" || r.state === "before") {
-    live.push(`<div class="card"><div class="kicker">Nothing scheduled right now</div>
-      <p class="name">Free</p><div class="when">Next up below.</div></div>`);
-  } else if (r.state === "done") {
-    live.push(`<div class="card"><div class="kicker">Day done</div>
-      <p class="name">That is the lot</p><div class="when">Go to bed.</div></div>`);
+    fill(nowCard, {
+      hot: true,
+      kicker: "You should be here now",
+      name: r.current.name,
+      when: r.current.start + "–" + r.current.end + " · " + r.current.address,
+      note: r.current.note,
+      risk: /^RISK:|^BOOK /.test(r.current.note || ""),
+      maps: { href: r.current.maps, label: "Open in Maps" },
+    });
   } else {
-    live.push(`<div class="card"><div class="kicker">Trip over</div>
-      <p class="name">Nothing left</p><div class="when">Hope it was good.</div></div>`);
+    const copy = {
+      gap: ["Nothing scheduled right now", "Free", "Next up below."],
+      before: ["Not started yet", "Free", "The first day has not begun."],
+      done: ["Day done", "That is the lot", "Go to bed."],
+      after: ["Trip over", "Nothing left", "Hope it was good."],
+    }[r.state];
+    fill(nowCard, { kicker: copy[0], name: copy[1], when: copy[2] });
   }
 
   if (r.next) {
-    const leaveAt = toMinutes(r.next.start) - (r.next.travelMin || 0);
-    let leave = "";
+    let leave = null;
     if (r.day) {
+      const leaveAt = toMinutes(r.next.start) - (r.next.travelMin || 0);
       const mins = leaveAt - wall.minutes;
-      const urgent = mins <= 15;
-      const text = mins <= 0
-        ? `Leave now &middot; ${esc(r.next.travelMode || "")} ${r.next.travelMin || 0} min`
-        : `Leave by ${hhmm(leaveAt)} &middot; ${esc(r.next.travelMode || "")} ${r.next.travelMin || 0} min &middot; in ${mins} min`;
-      leave = `<div class="leave${urgent ? " urgent" : ""}">${text}</div>`;
+      const mode = r.next.travelMode || "";
+      const dur = (r.next.travelMin || 0) + " min";
+      leave = {
+        urgent: mins <= 15,
+        text: mins <= 0
+          ? "Leave now · " + mode + " " + dur
+          : "Leave by " + hhmm(leaveAt) + " · " + mode + " " + dur + " · in " + mins + " min",
+      };
     }
-    live.push(card("Next", r.next, { leave }));
+    fill(nextCard, {
+      kicker: "Next",
+      name: r.next.name,
+      when: r.next.start + "–" + r.next.end + " · " + r.next.address,
+      leave,
+      note: r.next.note,
+      risk: /^RISK:|^BOOK /.test(r.next.note || ""),
+      maps: { href: r.next.maps, label: "Open in Maps" },
+    });
+    nextCard.el.hidden = false;
+  } else {
+    nextCard.el.hidden = true;
   }
-  document.getElementById("live").innerHTML = live.join("");
 
-  const days = [...TRIP.days].sort((a, b) => a.date.localeCompare(b.date));
-  const rest = days.map((d) => {
-    const isToday = d.date === wall.date;
-    const body = `<h2>${esc(d.label)}</h2>${dayList(d, wall.minutes, isToday)}`;
-    return isToday ? body : `<details><summary>${esc(d.label)}</summary>${dayList(d, 0, false)}</details>`;
-  }).join("");
+  for (const [key, { li, item }] of rows) {
+    const today = key.startsWith(wall.date);
+    const active = today && toMinutes(item.start) <= wall.minutes && wall.minutes < toMinutes(item.end);
+    const past = today && wall.minutes >= toMinutes(item.end);
+    li.classList.toggle("active", active);
+    li.classList.toggle("past", past);
+  }
 
-  const cands = (TRIP.candidates || []).map(
-    (c) => `<p class="cand"><b>${esc(c.name)}</b> &mdash; ${esc(c.why)}</p>`
-  ).join("");
-  document.getElementById("rest").innerHTML = rest + (cands ? `<h2>Unresolved</h2>${cands}` : "");
-
-  document.getElementById("foot").innerHTML =
-    `Base: <a href="${esc(TRIP.base.maps)}" target="_blank" rel="noopener">${esc(TRIP.base.address)}</a>. ` +
-    `Clock is ${esc(TRIP.timezone)}, whatever your phone says.`;
+  // Announce only when the place changes, never on the ticking countdown.
+  const key = r.state + ":" + (r.current ? r.current.id : "-");
+  if (key !== announced) {
+    announced = key;
+    $("#status").textContent = r.current
+      ? "Now: " + r.current.name
+      : nowCard.name.textContent;
+  }
 }
 
-render();
-setInterval(render, 15000);
-document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+buildDays(wallClock(Date.now(), TRIP.timezone).date);
+tick();
+setInterval(tick, 15000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(); });
 </script>
 </body>
 </html>
